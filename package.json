@@ -7,8 +7,8 @@
     "pipeline": "tsx scripts/pipeline.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.52.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "openai": "^6.37.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",

@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { llmCall, MODELS } from '../lib/llm';
 
 export interface FeedbackItem {
   id: string;
@@ -21,35 +21,16 @@ export interface RefinementResult {
 }
 
 export async function refine(draft: string, feedback: FeedbackItem[]): Promise<RefinementResult> {
-  const client = new Anthropic();
-
   const feedbackBlock = feedback
     .map(f => `### Item ${f.id}\n**Target:** ${f.target}\n**Issue:** ${f.issue}\n**Instruction:** ${f.instruction}`)
     .join('\n\n');
 
-  const response = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 4000,
-    messages: [{
-      role: 'user',
-      content: `You are a precise copy editor. Address ONLY the targeted passages. Do not touch any text outside them.
+  const text = await llmCall(
+    'You are a precise copy editor. Address ONLY the targeted passages. Do not touch any text outside them. Return JSON only — no preamble, no markdown. Schema: { "diffs": [{ "id", "target", "before", "after", "reason" }], "skipped": string[] }',
+    `DRAFT:\n${draft}\n\n---\n\nFEEDBACK:\n${feedbackBlock}`,
+    { model: MODELS.main, maxTokens: 4000 }
+  );
 
-For each feedback item return: id, target, before (exact text), after (replacement), reason (one sentence).
-If you cannot address an item without touching untargeted text, add its ID to skipped.
-
-Return JSON only. No preamble. Schema: { "diffs": [...], "skipped": string[] }
-
-DRAFT:
-${draft}
-
----
-
-FEEDBACK:
-${feedbackBlock}`,
-    }],
-  });
-
-  const text = response.content.filter(b => b.type === 'text').map(b => b.text).join('');
   const clean = text.replace(/```json|```/g, '').trim();
   return JSON.parse(clean) as RefinementResult;
 }

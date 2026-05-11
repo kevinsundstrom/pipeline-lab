@@ -1,0 +1,18 @@
+{
+  "name": "pipeline-lab",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "agent": "tsx scripts/agent.ts",
+    "pipeline": "tsx scripts/pipeline.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.52.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.4"
+  }
+}

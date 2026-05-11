@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
 
 export const MODELS = {
-  fast: 'gpt-4o-mini',   // researcher — speed + cost
-  main: 'gpt-4o',        // writer, repair, refine
+  fast: 'claude-haiku-4.5',    // researcher — speed + cost
+  main: 'claude-sonnet-4.6',   // writer, repair, refine
 } as const;
 
 const DEFAULT_MAX_TOKENS = 8096;
